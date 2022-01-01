@@ -9,7 +9,7 @@ class SelectOption {
 
 class SigleSelectFilterView extends StatelessWidget {
   final List<SelectOption> options;
-  final String value;
+  final String? value;
   final String title;
   final Function(SelectOption) onSelectChange;
   final Color? selectedColor;
@@ -17,7 +17,7 @@ class SigleSelectFilterView extends StatelessWidget {
   const SigleSelectFilterView(
       {Key? key,
       this.options = const [],
-      required this.value,
+      this.value,
       required this.onSelectChange,
       required this.title,
       this.selectedColor})
@@ -41,7 +41,7 @@ class SigleSelectFilterView extends StatelessWidget {
           children: [
             ...options.map((option) {
               return Padding(
-                padding: const EdgeInsets.only(left: 4, right: 4),
+                padding: const EdgeInsets.only(left: 4, right: 4,bottom: 8),
                 child: FilterChip(
                     label: Text(option.key),
                     onSelected: (selected) {
@@ -114,7 +114,70 @@ class CheckChipFilterView extends StatelessWidget {
     );
   }
 }
+class DateRangeFilterView extends StatelessWidget {
+  final List<SelectOption> options;
+  final List<String> checked;
+  final Function(List<String>) onValueChange;
+  final Color? selectedColor;
+  final String title;
 
+  const DateRangeFilterView(
+      {Key? key,
+        required this.options,
+        required this.checked,
+        this.selectedColor,
+        required this.onValueChange,
+        this.title = ""})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            title,
+            style: const TextStyle(color: Colors.white70),
+          ),
+        ),
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.start,
+          alignment: WrapAlignment.start,
+          children: [
+            ...options.map((option) {
+              bool isSelected = checked.contains(option.key);
+              return ActionChip(
+                  backgroundColor: isSelected ? selectedColor : null,
+                  label: Text(option.label),
+                  onPressed: () {
+
+                  });
+            }),
+            ActionChip(label: const Text("new range"), onPressed: ()async {
+              showDialog(context: context, builder: (builder) {
+                return Dialog(
+                  child:Container(
+                    height: 300,
+                    child: Column(
+                      children: [
+                        ElevatedButton(onPressed: (){}, child: Text("Start"))
+                      ],
+                    ),
+                  ),
+                );
+
+              });
+            })
+          ],
+        )
+      ],
+    );
+  }
+}
 class FilterView extends StatefulWidget {
   final String title;
   final List<Widget> children;
@@ -147,12 +210,12 @@ class _FilterViewState extends State<FilterView> {
               style: const TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
-          Padding(
+          Expanded(child:  Padding(
             padding: widget.padding,
-            child: Column(
+            child: ListView(
               children: widget.children,
             ),
-          )
+          ))
 
         ],
       ),

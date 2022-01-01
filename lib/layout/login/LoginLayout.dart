@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:youplusauthplugin/youplusauthplugin.dart';
 import 'package:youui/account/store.dart';
+import 'package:youui/util.dart';
 
 class LoginLayout extends StatefulWidget {
   final String? defaultPort;
@@ -13,6 +14,7 @@ class LoginLayout extends StatefulWidget {
   final Color? subtitleColor;
   final Color? backgroundColor;
   final Color? mainColor;
+  final Color? textColor;
 
   const LoginLayout(
       {Key? key,
@@ -21,6 +23,7 @@ class LoginLayout extends StatefulWidget {
       this.titleColor,
       this.subtitleColor,
       this.backgroundColor,
+      this.textColor,
       required this.onLoginSuccess,
       required this.title,
       required this.subtitle})
@@ -133,7 +136,7 @@ class _LoginLayoutState extends State<LoginLayout> {
                     ),
                     Expanded(
                         child: DefaultTabController(
-                      initialIndex: LoginHistoryManager().list.isEmpty ? 1 : 0,
+                      initialIndex: 0,
                       length: 2,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,8 +147,9 @@ class _LoginLayoutState extends State<LoginLayout> {
                               top: 16,
                               bottom: 16,
                             ),
-                            child: const TabBar(
-                              tabs: [
+                            child: TabBar(
+                              indicatorColor: widget.mainColor,
+                              tabs: const [
                                 Tab(
                                   text: "History",
                                 ),
@@ -159,17 +163,33 @@ class _LoginLayoutState extends State<LoginLayout> {
                               child: TabBarView(
                             children: [
                               ListView(
-                                children:
-                                    AccountManager().loginHistoryManager.list.map((history) {
+                                children: AccountManager()
+                                    .loginHistoryManager
+                                    .list
+                                    .map((history) {
                                   return Container(
                                     margin: const EdgeInsets.only(bottom: 8),
                                     child: ListTile(
                                       onTap: () => _onHistoryClick(history),
-                                      leading: const CircleAvatar(
-                                        child: Icon(Icons.person),
+                                      leading: CircleAvatar(
+                                        backgroundColor: widget.mainColor,
+                                        child: const Icon(
+                                          Icons.person,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                      title: Text(history.username!),
-                                      subtitle: Text(history.apiUrl!),
+                                      title: Text(
+                                        history.username!,
+                                        style: TextStyle(
+                                            color: getContrastTextColor(
+                                                widget.backgroundColor)),
+                                      ),
+                                      subtitle: Text(
+                                        history.apiUrl!,
+                                        style: TextStyle(
+                                            color: getContrastTextColor(
+                                                widget.backgroundColor)),
+                                      ),
                                       tileColor: Colors.black26,
                                     ),
                                   );
@@ -178,6 +198,8 @@ class _LoginLayoutState extends State<LoginLayout> {
                               ListView(
                                 children: [
                                   LoginInput(
+                                    textStyle:
+                                        TextStyle(color: widget.textColor),
                                     activeColor: widget.mainColor,
                                     unactiveColor: Colors.white24,
                                     onInputChange: (text) {
@@ -190,6 +212,8 @@ class _LoginLayoutState extends State<LoginLayout> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 16),
                                     child: LoginInput(
+                                      textStyle:
+                                          TextStyle(color: widget.textColor),
                                       activeColor: widget.mainColor,
                                       unactiveColor: Colors.white24,
                                       onInputChange: (text) {
@@ -205,6 +229,8 @@ class _LoginLayoutState extends State<LoginLayout> {
                                     child: LoginInput(
                                       activeColor: widget.mainColor,
                                       unactiveColor: Colors.white24,
+                                      textStyle:
+                                          TextStyle(color: widget.textColor),
                                       onInputChange: (text) {
                                         setState(() {
                                           inputPassword = text;
@@ -269,12 +295,14 @@ class LoginInput extends StatelessWidget {
   final Color? activeColor;
   final Color unactiveColor;
   final bool obscureText;
+  final TextStyle? textStyle;
 
   const LoginInput(
       {Key? key,
       this.onInputChange,
       this.hintText,
       this.activeColor,
+      this.textStyle,
       this.unactiveColor = Colors.white24,
       this.obscureText = false})
       : super(key: key);
@@ -282,6 +310,7 @@ class LoginInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      style: textStyle,
       decoration: InputDecoration(
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(

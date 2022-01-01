@@ -17,6 +17,8 @@ class CoverTitleGridItem extends StatelessWidget {
   final double borderRadius;
   final Function()? onTap;
   final double? coverHeight;
+  final Color? failedColor;
+  final IconData? failedIcon;
 
   const CoverTitleGridItem({Key? key,
     this.metaHeight = 36,
@@ -30,6 +32,8 @@ class CoverTitleGridItem extends StatelessWidget {
     this.placeHolderIcon,
     this.titleTextStyle,
     this.onTap,
+    this.failedColor,
+    this.failedIcon,
     this.subtitleTextStyle, this.imageBoxFit, this.borderRadius = 0, this.coverHeight})
       : super(key: key);
 
@@ -39,18 +43,18 @@ class CoverTitleGridItem extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: GestureDetector(
+          child:GestureDetector(
             onTap: onTap,
             child: Container(
               child: Cover(
                 loadingColor: loadingCoverColor,
                 placeHolderColor: placeholderColor,
                 placeHolderIcon: placeHolderIcon,
-                width: coverWidth,
-                height: coverHeight,
                 imageFit: imageBoxFit,
                 coverUrl: imageUrl,
                 borderRadius: borderRadius,
+                failedColor: failedColor,
+                failedIcon: failedIcon,
               ),
             ),
           ),
@@ -60,7 +64,7 @@ class CoverTitleGridItem extends StatelessWidget {
           height: metaHeight,
           width: double.infinity,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(

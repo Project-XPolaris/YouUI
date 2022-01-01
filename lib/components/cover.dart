@@ -10,17 +10,20 @@ class Cover extends StatelessWidget {
   final Color? placeHolderColor;
   final Icon? placeHolderIcon;
   final Color? loadingColor;
+  final Color? failedColor;
+  final IconData? failedIcon;
   final BoxFit? imageFit;
 
-  Cover(
-      {this.coverUrl,
-      this.onTap,
-      this.placeHolderColor,
-      this.loadingColor,
-      this.placeHolderIcon,
-      this.width,
-      this.borderRadius = 0,
-      this.imageFit, this.height});
+  Cover({this.coverUrl,
+    this.onTap,
+    this.placeHolderColor,
+    this.loadingColor,
+    this.placeHolderIcon,
+    this.width,
+    this.failedColor,
+    this.failedIcon = Icons.image_not_supported,
+    this.borderRadius = 0,
+    this.imageFit, this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +45,24 @@ class Cover extends StatelessWidget {
     if (url != null) {
       return GestureDetector(
         child: ClipRRect(
-          child: CachedNetworkImage(
+          child: Image.network(
+            url,
             fit: imageFit,
-            imageUrl: url,
             width: width,
             height: height,
-            placeholder: (context, url) => Container(
-              color: loadingColor,
-            ),
-            errorWidget: (context, url, error) => renderNoEmptyView(),
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: failedColor,
+                  borderRadius: BorderRadius.circular(borderRadius),
+                ),
+                width: width,
+                height: height,
+                child: Center(
+                  child: Icon(failedIcon),
+                ),
+              );
+            },
           ),
           borderRadius: BorderRadius.circular(borderRadius),
         ),

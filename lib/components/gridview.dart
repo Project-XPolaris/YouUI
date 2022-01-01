@@ -15,20 +15,20 @@ class ResponsiveGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery
-        .of(context)
-        .size
-        .width;
-    var crossAxisCount = width ~/ itemWidth;
-    return GridView.count(
-      controller: controller,
-      primary: false,
-      childAspectRatio:aspectRatio,
-      padding: const EdgeInsets.all(20),
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
-      crossAxisCount: crossAxisCount,
-      children: children,
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          var crossAxisCount = constraints.maxWidth ~/ itemWidth;
+          return GridView.count(
+            controller: controller,
+            primary: false,
+            childAspectRatio: aspectRatio,
+            padding: const EdgeInsets.all(20),
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            crossAxisCount: crossAxisCount,
+            children: children,
+          );
+        }
     );
   }
 }

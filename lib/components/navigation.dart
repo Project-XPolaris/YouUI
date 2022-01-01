@@ -74,7 +74,8 @@ class VerticalNavigationView extends StatelessWidget {
                 backgroundColor: navigationStyle?.backgroundColor,
                 onDestinationSelected: _onTabIndexChange,
                 selectedIndex: _getTabIndex(),
-                destinations:items)),
+                destinations:items
+            )),
         actionWidget ?? Container(),
       ]),
     );

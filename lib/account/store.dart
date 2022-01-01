@@ -100,7 +100,9 @@ class AccountManager {
     }
     LoginHistory loginHistory =
     LoginHistory(apiUrl: serviceUrl, username: "Public");
-    if (info.authEnable!) {
+    bool? isAuthEnable = info.authEnable;
+    print(isAuthEnable);
+    if (isAuthEnable != null && isAuthEnable) {
       UserAuthResponse? userAuth = await _getUserAuth(username, password);
       if (userAuth == null) {
         return null;
@@ -113,6 +115,7 @@ class AccountManager {
   }
 
   Future<bool> loginWithHistory(LoginHistory loginHistory) async {
+    print(loginHistory.token);
     final String? url = loginHistory.apiUrl;
     if (url == null) {
       return false;
