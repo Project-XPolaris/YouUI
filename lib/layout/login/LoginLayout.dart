@@ -61,9 +61,6 @@ class _LoginLayoutState extends State<LoginLayout> {
       if (!uri.hasScheme) {
         inputUrl = "http://" + inputUrl;
       }
-      if (!uri.hasPort && defaultPort != null) {
-        inputUrl += ":$defaultPort";
-      }
       return inputUrl;
     }
 
