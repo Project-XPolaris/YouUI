@@ -1,7 +1,8 @@
 name: youui
 description: universal ui for projectxpolaris
 version: 0.0.1
-homepage:
+homepage: "https://github.com/Project-XPolaris/YouUI"
+repository: "https://github.com/Project-XPolaris/YouUI"
 
 environment:
   sdk: ">=2.15.0-268.8.beta <3.0.0"
@@ -15,8 +16,9 @@ dependencies:
   shared_preferences: ^2.0.8
   dio: 4.0.0
   cached_network_image: ^3.1.0
-  youplusauthplugin:
-    path: /Users/duzhengheng/Desktop/ProjectXpolaris/YouPlusAuthPlugin
+  youplusauthplugin: ^0.0.1
+  oauth2: ^2.0.0
+  flutter_inappwebview: 5.4.3+7
 
 dev_dependencies:
   flutter_test:

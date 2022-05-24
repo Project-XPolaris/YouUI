@@ -1,3 +1,5 @@
+import 'package:youui/account/base.dart';
+
 class UserAuthResponse {
   bool? success;
   String? token;
@@ -12,5 +14,20 @@ class UserAuthResponse {
     success = json["success"];
     token = json["token"];
     uid = json["uid"];
+  }
+}
+class OauthData {
+  String? accessToken;
+  String? username;
+  OauthData.fromJson(dynamic json) {
+    accessToken = json["accessToken"];
+    username = json["username"];
+  }
+}
+class OauthTokenResponse extends BaseResponse<OauthData> {
+  OauthTokenResponse.fromJson(json) : super.fromJson(json);
+  @override
+  OauthData? convert(json) {
+    return OauthData.fromJson(json);
   }
 }

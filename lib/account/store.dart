@@ -8,24 +8,32 @@ import 'dart:convert';
 
 import 'info.dart';
 
+class UserLoginResult {
+  bool success = false;
+  String message = "";
+  String token = "";
+}
+
 class AccountManager {
   static final AccountManager _singleton = AccountManager._internal();
   Youplusauthplugin plugin = Youplusauthplugin();
   String serviceUrl = "";
   String serviceName = "";
+  String userAuthPath = "/user/auth";
+  String getCurrentUserPath = "/user/auth";
   LoginHistoryManager loginHistoryManager = LoginHistoryManager();
   Function(LoginHistory)? authCallback;
   final Dio client = Dio();
+  Future<LoginHistory?> Function(
+      String serviceUrl, String username, String password)? onLogin;
 
   youplusLogin(String serviceUrl) {
     this.serviceUrl = serviceUrl;
   }
 
-
   _onAuthComplete(String username, token) async {
-    LoginHistory loginHistory = LoginHistory(
-        apiUrl: serviceUrl, username: username, token: token
-    );
+    LoginHistory loginHistory =
+        LoginHistory(apiUrl: serviceUrl, username: username, token: token);
     await loginHistoryManager.add(loginHistory);
     authCallback?.call(loginHistory);
   }
@@ -44,15 +52,14 @@ class AccountManager {
     plugin.openYouPlus();
   }
 
-
-  Future<Info?> _getInfo() async {
+  Future<Info?> getInfo() async {
     var response = await client.get("$serviceUrl/info");
     Info info = Info.fromJson(response.data);
     return info;
   }
 
   Future<Info?> _getService() async {
-    Info? info = await _getInfo();
+    Info? info = await getInfo();
     if (info == null || !info.success) {
       return null;
     }
@@ -61,7 +68,7 @@ class AccountManager {
       var response = await client
           .get("$serviceUrl/entry", queryParameters: {"name": serviceName});
       FetchEntityByNameResponse fetchEntityByNameResponse =
-      FetchEntityByNameResponse.fromJson(response.data);
+          FetchEntityByNameResponse.fromJson(response.data);
       List<String>? urls = fetchEntityByNameResponse.entity?.export?.urls;
       if (urls == null) {
         return null;
@@ -69,7 +76,7 @@ class AccountManager {
       // use can access urls
       for (var url in urls) {
         serviceUrl = url;
-        Info? info = await _getInfo();
+        Info? info = await getInfo();
         if (info != null && !info.success) {
           return info;
         }
@@ -78,12 +85,12 @@ class AccountManager {
     return info;
   }
 
-  Future<UserAuthResponse?> _getUserAuth(String username, password) async {
-    var authResponse = await client.post("$serviceUrl/user/auth", data: {
+  Future<OauthTokenResponse?> _getUserAuth(String path,String username, password) async {
+    var authResponse = await client.post("$serviceUrl$path", data: {
       "username": username,
       "password": password,
-    });
-    UserAuthResponse userAuth = UserAuthResponse.fromJson(authResponse.data);
+    },queryParameters: { "type":"accessToken" });
+    OauthTokenResponse userAuth = OauthTokenResponse.fromJson(authResponse.data);
     bool? success = userAuth.success;
     if (success == null || !success) {
       return null;
@@ -91,42 +98,61 @@ class AccountManager {
     return userAuth;
   }
 
-  Future<LoginHistory?> login(String serviceUrl, String username,
-      String password) async {
+  Future<OauthData?> _getOauthToken(String code) async {
+    var response = await client
+        .get("$serviceUrl/oauth/youauth", queryParameters: {"code": code});
+    OauthTokenResponse oauthTokenResponse =
+        OauthTokenResponse.fromJson(response.data);
+    bool? success = oauthTokenResponse.success;
+    if (success == null || !success) {
+      return null;
+    }
+    return oauthTokenResponse.data;
+  }
+
+  Future<LoginHistory?> login(
+      String serviceUrl,String path, String username, String password) async {
     this.serviceUrl = serviceUrl;
     final Info? info = await _getService();
     if (info == null || !info.success) {
       return null;
     }
-    LoginHistory loginHistory =
-    LoginHistory(apiUrl: serviceUrl, username: "Public");
-    bool? isAuthEnable = info.authEnable;
-    print(isAuthEnable);
-    if (isAuthEnable != null && isAuthEnable) {
-      UserAuthResponse? userAuth = await _getUserAuth(username, password);
-      if (userAuth == null) {
-        return null;
-      }
-      loginHistory.token = userAuth.token;
-      loginHistory.username = username;
+    final customLogin = onLogin;
+    if (customLogin != null) {
+      return customLogin(serviceUrl, username, password);
     }
+    LoginHistory loginHistory =
+        LoginHistory(apiUrl: serviceUrl, username: "Public");
+
+    OauthTokenResponse? userAuth = await _getUserAuth(path,username, password);
+    if (userAuth == null) {
+      return null;
+    }
+    loginHistory.token = userAuth.data!.accessToken;
+    loginHistory.username = userAuth.data!.username;
+
     loginHistoryManager.add(loginHistory);
     return loginHistory;
   }
 
+  LoginHistory anonymousLogin(){
+    LoginHistory history = LoginHistory(username: "anonymous", apiUrl: serviceUrl);
+    loginHistoryManager.add(history);
+    return history;
+  }
+
   Future<bool> loginWithHistory(LoginHistory loginHistory) async {
-    print(loginHistory.token);
     final String? url = loginHistory.apiUrl;
     if (url == null) {
       return false;
     }
     serviceUrl = url;
-    Info? info = await _getInfo();
+    Info? info = await getInfo();
     if (info == null || !info.success) {
       return false;
     }
     if (info.isAuthEnable()) {
-      var tokenResponse = await client.get("$serviceUrl/user/auth",
+      var tokenResponse = await client.get("$serviceUrl$getCurrentUserPath",
           queryParameters: {"token": loginHistory.token});
       UserToken token = UserToken.fromJson(tokenResponse.data);
       if (!token.isSuccess()) {
@@ -134,6 +160,28 @@ class AccountManager {
       }
     }
     return true;
+  }
+
+  Future<LoginHistory?> loginWithYouAuth(
+      String serviceUrl, String authCode) async {
+    this.serviceUrl = serviceUrl;
+    final Info? info = await _getService();
+    if (info == null || !info.success) {
+      return null;
+    }
+    LoginHistory loginHistory =
+        LoginHistory(apiUrl: serviceUrl, username: "Public");
+    bool? isAuthEnable = info.authEnable;
+
+    OauthData? userAuth = await _getOauthToken(authCode);
+    if (userAuth == null) {
+      return null;
+    }
+    loginHistory.token = userAuth.accessToken;
+    loginHistory.username = userAuth.username;
+
+    loginHistoryManager.add(loginHistory);
+    return loginHistory;
   }
 
   AccountManager._internal();
@@ -175,7 +223,7 @@ class LoginHistoryManager {
 
   add(LoginHistory history) async {
     list.removeWhere((element) =>
-    element.apiUrl == history.apiUrl &&
+        element.apiUrl == history.apiUrl &&
         element.username == history.username);
     list.insert(0, history);
     await save();

@@ -32,7 +32,7 @@ class ResponsiveTabPageLayout extends StatelessWidget {
       verticalChild: HomeTabLayoutVertical(
         body: body,
         appbar: appbar,
-        bottomNavigationBar: HorizonNavigationView(
+        navigationBar: HorizonNavigationView(
             onTabIndexChange: onTabIndexChange,
             tabIndex: tabIndex,
             navigationStyle: navigationStyle,

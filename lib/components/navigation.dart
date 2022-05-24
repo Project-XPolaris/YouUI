@@ -66,12 +66,6 @@ class VerticalNavigationView extends StatelessWidget {
         Container(height: 24,),
         Expanded(
             child: NavigationRail(
-                selectedIconTheme: IconThemeData(
-                  color: navigationStyle?.selectedItemColor,
-                ),
-                unselectedIconTheme:
-                IconThemeData(color: navigationStyle?.unselectedItemColor),
-                backgroundColor: navigationStyle?.backgroundColor,
                 onDestinationSelected: _onTabIndexChange,
                 selectedIndex: _getTabIndex(),
                 destinations:items
@@ -82,7 +76,7 @@ class VerticalNavigationView extends StatelessWidget {
   }
 }
 
-class HorizonNavigationView extends BottomNavigationBar {
+class HorizonNavigationView extends NavigationBar {
   final int tabIndex;
   final Function(int)? onTabIndexChange;
   final List<NavigationBarItem> navItems;
@@ -94,14 +88,15 @@ class HorizonNavigationView extends BottomNavigationBar {
     this.navItems = const [],
     this.navigationStyle})
       : super(
-      key: key,
-      onTap: onTabIndexChange,
-      currentIndex: tabIndex,
-      selectedItemColor: navigationStyle?.selectedItemColor,
-      unselectedItemColor: navigationStyle?.unselectedItemColor,
-      backgroundColor: navigationStyle?.backgroundColor,
-      elevation: 0,
-      items: navItems.map((e) {
-        return BottomNavigationBarItem(icon: e.icon, label: e.label);
-      }).toList());
+    destinations: [
+      ...navItems.map((e) {
+        return NavigationDestination(
+            icon: e.icon, label: e.label);
+      })
+    ],
+    selectedIndex: tabIndex,
+    onDestinationSelected: (int index) {
+      onTabIndexChange?.call(index);
+    },
+  );
 }

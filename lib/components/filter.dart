@@ -34,7 +34,6 @@ class SigleSelectFilterView extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Text(
             title,
-            style: const TextStyle(color: Colors.white70),
           ),
         ),
         Wrap(
@@ -85,7 +84,6 @@ class CheckChipFilterView extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Text(
             title,
-            style: const TextStyle(color: Colors.white70),
           ),
         ),
         Wrap(
@@ -141,7 +139,6 @@ class DateRangeFilterView extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Text(
             title,
-            style: const TextStyle(color: Colors.white70),
           ),
         ),
         Wrap(
@@ -207,7 +204,7 @@ class _FilterViewState extends State<FilterView> {
             color: widget.headerBackgroundColor,
             child: Text(
               widget.title,
-              style: const TextStyle(color: Colors.white, fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
           ),
           Expanded(child:  Padding(
@@ -216,7 +213,6 @@ class _FilterViewState extends State<FilterView> {
               children: widget.children,
             ),
           ))
-
         ],
       ),
     );

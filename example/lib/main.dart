@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:youui/layout/login/LoginLayout.dart';
+import 'package:youui/layout/login/NewAccountLayout.dart';
 import 'package:youui/youui.dart';
+import 'package:youui_example/Nav.dart';
 import 'package:youui_example/cover-title-item-example.dart';
 import 'package:youui_example/cover-title-list-item-example.dart';
 import 'package:youui_example/horizon-list-example.dart';
@@ -52,6 +55,17 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.light,
+        useMaterial3: true,
+        colorSchemeSeed:Colors.greenAccent ,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        useMaterial3: true,
+        colorSchemeSeed:Colors.greenAccent ,
+      ),
+      themeMode: ThemeMode.light,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
@@ -90,7 +104,43 @@ class _MyAppState extends State<MyApp> {
                           builder: (context) => HorizonListExample()),
                     );
                   },
-                )
+                ),
+                ListTile(
+                  title: const Text("NewLogin"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NewLoginLayout(onLogin: (history){})),
+                    );
+                  },
+                ),
+                ListTile(
+                  title: const Text("Auth"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LoginLayout(
+                            title: 'My app',
+                            onLoginSuccess: (LoginHistory ) {
+
+                            },
+                            subtitle: 'from someone',
+                          )),
+                    );
+                  },
+                ),
+                ListTile(
+                  title: const Text("Horizon Naviagtion"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NavExpanlePage())
+                    );
+                  },
+                ),
               ],
             ));
           }
