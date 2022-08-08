@@ -23,13 +23,14 @@ class VerticalNavigationView extends StatelessWidget {
   final NavigationStyle? navigationStyle;
   final bool showBack;
   final Widget? action;
-
+  final double? navHeight;
   const VerticalNavigationView({Key? key,
     this.tabIndex = 0,
     this.onTabIndexChange,
     this.navItems = const [],
     this.showBack = false,
     this.action,
+    this.navHeight,
     this.navigationStyle})
       : super(key: key);
 
@@ -61,17 +62,19 @@ class VerticalNavigationView extends StatelessWidget {
       return tabIndex;
     }
     return Container(
-      color: navigationStyle?.backgroundColor,
-      child: Column(children: [
-        Container(height: 24,),
-        Expanded(
+      child: Column(
+        children: [
+          Container(
+            height: navHeight,
             child: NavigationRail(
                 onDestinationSelected: _onTabIndexChange,
                 selectedIndex: _getTabIndex(),
-                destinations:items
-            )),
-        actionWidget ?? Container(),
-      ]),
+                destinations:items,
+            ),
+          ),
+          action ?? Container(),
+        ],
+      ),
     );
   }
 }

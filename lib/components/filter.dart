@@ -60,7 +60,7 @@ class SigleSelectFilterView extends StatelessWidget {
 class CheckChipFilterView extends StatelessWidget {
   final List<SelectOption> options;
   final List<String> checked;
-  final Function(List<String>) onValueChange;
+  final Function(SelectOption option,bool isSelected,List<String> seleted) onValueChange;
   final Color? selectedColor;
   final String title;
 
@@ -92,19 +92,22 @@ class CheckChipFilterView extends StatelessWidget {
           children: [
             ...options.map((option) {
               bool isSelected = checked.contains(option.key);
-              return ActionChip(
-                  backgroundColor: isSelected ? selectedColor : null,
-                  label: Text(option.label),
-                  onPressed: () {
-                    if (isSelected) {
-                      onValueChange(checked
-                          .where((element) => element != option.key)
-                          .toList());
-                      return;
-                    } else {
-                      onValueChange([...checked, option.key]);
-                    }
-                  });
+              return Container(
+                padding: EdgeInsets.all(8),
+                child: ActionChip(
+                    backgroundColor: isSelected ? selectedColor : null,
+                    label: Text(option.label),
+                    onPressed: () {
+                      if (isSelected) {
+                        onValueChange(option,isSelected,checked
+                            .where((element) => element != option.key)
+                            .toList());
+                        return;
+                      } else {
+                        onValueChange(option,isSelected,[...checked, option.key]);
+                      }
+                    }),
+              );
             })
           ],
         )

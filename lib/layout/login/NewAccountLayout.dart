@@ -7,11 +7,9 @@ import 'package:youui/layout/login/WebOauthLoginView.dart';
 import '../../components/oauth-web-login.dart';
 
 class NewLoginLayout extends StatefulWidget {
-  final Function (LoginHistory history) onLogin;
+  final Function(LoginHistory history) onLogin;
 
-  const NewLoginLayout(
-      {Key? key, required this.onLogin})
-      : super(key: key);
+  const NewLoginLayout({Key? key, required this.onLogin}) : super(key: key);
 
   @override
   State<NewLoginLayout> createState() => _NewLoginLayoutState();
@@ -70,13 +68,14 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
         });
       }
     }
+
     _onOauthLoginResult(String authCode) async {
       final String? serviceUrl = AccountManager().serviceUrl;
       if (serviceUrl == null) {
         return;
       }
       LoginHistory? loginAccount =
-      await AccountManager().loginWithYouAuth(serviceUrl, authCode);
+          await AccountManager().loginWithYouAuth(serviceUrl, authCode);
       if (loginAccount == null) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("login error")));
@@ -89,9 +88,8 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
       return BaseLoginView(
         onLoginClick: (username, password) async {
           if (username == null || password == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text("Please enter username and password")));
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Please enter username and password")));
             return;
           }
           LoginHistory? history = await AccountManager().login(
@@ -117,10 +115,9 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
           });
           // nav to in app web view
           final code = await Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) =>
-                  WebOauthWindow(oauthUrl: oauthTarget.toString(),))
-          );
-          print("code: $code");
+              builder: (context) => WebOauthWindow(
+                    oauthUrl: oauthTarget.toString(),
+                  )));
           if (code != null) {
             _onOauthLoginResult(code);
           }
@@ -135,17 +132,32 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
       );
     }
 
+    Widget renderAnomymousLogin() {
+      return Container(
+        child: Column(
+          children: [
+            ElevatedButton(
+              child: Text("Anonymous Login"),
+              onPressed: () async {
+                // LoginHistory? history = await AccountManager().login(
+                //     AccountManager().serviceUrl, info.url!, null, null);
+                // if (history != null) {
+                //   widget.onLogin(history);
+                // }
+              },
+            )
+          ],
+        ),
+      );
+    }
+
     List<Widget> renderSelectHost() {
       return [
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(const Radius.circular(16)),
-              color: Theme
-                  .of(context)
-                  .colorScheme
-                  .surfaceVariant
-          ),
+              color: Theme.of(context).colorScheme.surfaceVariant),
           child: Row(
             children: [
               Expanded(
@@ -163,7 +175,6 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
               ),
               GestureDetector(
                 child: Container(
-
                   width: 48,
                   height: 48,
                   child: const Center(
@@ -186,32 +197,28 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
         ),
         Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(0),
-              children: [
-                for (final host in hostList)
-                  GestureDetector(
-                    onTap: () {
-                      _onConnectClick(targetUrl: host);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                              const Radius.circular(16)),
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .surfaceVariant
-                      ),
-                      child: Text(
-                        host,
-                        style: TextStyle(),
-                      ),
-                    ),
-                  )
-              ],
-            ))
+          padding: const EdgeInsets.all(0),
+          children: [
+            for (final host in hostList)
+              GestureDetector(
+                onTap: () {
+                  _onConnectClick(targetUrl: host);
+                },
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                      borderRadius:
+                          const BorderRadius.all(const Radius.circular(16)),
+                      color: Theme.of(context).colorScheme.surfaceVariant),
+                  child: Text(
+                    host,
+                    style: TextStyle(),
+                  ),
+                ),
+              )
+          ],
+        ))
       ];
     }
 
@@ -234,6 +241,18 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
                 child: renderUsernamePasswordLogin(element),
               ));
               break;
+            case 'anonymous':
+              tabs.add(Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      widget.onLogin(AccountManager().anonymousLogin());
+                    },
+                    child: Text("Anonymous Login"),
+                  ),
+                ],
+              ));
+              break;
             default:
               break;
           }
@@ -247,18 +266,14 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .surfaceVariant
-                    ),
+                        color: Theme.of(context).colorScheme.surfaceVariant),
                     padding: const EdgeInsets.all(8),
                     child: ListTile(
                       leading: Icon(
                         Icons.cloud,
                       ),
-                      title: Text(AccountManager().serviceUrl,
-                          style: TextStyle()),
+                      title:
+                          Text(AccountManager().serviceUrl, style: TextStyle()),
                       trailing: GestureDetector(
                         child: Icon(
                           Icons.close,
@@ -277,26 +292,19 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
                         text: value.name,
                       )
                   ],
-                  indicatorColor: Theme
-                      .of(context)
-                      .colorScheme
-                      .primary,
-                  labelColor: Theme
-                      .of(context)
-                      .colorScheme
-                      .primary,
-
+                  indicatorColor: Theme.of(context).colorScheme.primary,
+                  labelColor: Theme.of(context).colorScheme.primary,
                 ),
                 Expanded(
                     child: Container(
-                      padding: EdgeInsets.only(left: 16, right: 16),
-                      child: Container(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: TabBarView(
-                          children: tabs,
-                        ),
-                      ),
-                    ))
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: TabBarView(
+                      children: tabs,
+                    ),
+                  ),
+                ))
               ],
             ),
           ),
@@ -314,9 +322,12 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
           case "anonymous":
             content = Column(
               children: [
-                ElevatedButton(onPressed: () {
-                  widget.onLogin(AccountManager().anonymousLogin());
-                }, child: Text("Anonymous Login"),),
+                ElevatedButton(
+                  onPressed: () {
+                    widget.onLogin(AccountManager().anonymousLogin());
+                  },
+                  child: Text("Anonymous Login"),
+                ),
               ],
             );
             break;
@@ -330,18 +341,14 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(16)),
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .surfaceVariant
-                  ),
+                      color: Theme.of(context).colorScheme.surfaceVariant),
                   padding: const EdgeInsets.all(8),
                   child: ListTile(
                     leading: Icon(
                       Icons.cloud,
                     ),
-                    title: Text(AccountManager().serviceUrl,
-                        style: TextStyle()),
+                    title:
+                        Text(AccountManager().serviceUrl, style: TextStyle()),
                     trailing: GestureDetector(
                       child: Icon(
                         Icons.close,
@@ -355,12 +362,12 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
                   )),
               Expanded(
                   child: Container(
-                    padding: EdgeInsets.only(left: 16, right: 16),
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: content,
-                    ),
-                  ))
+                padding: EdgeInsets.only(left: 16, right: 16),
+                child: Container(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: content,
+                ),
+              ))
             ],
           ),
         );
@@ -369,8 +376,8 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
       return [
         Expanded(
             child: Container(
-              child: loginContent,
-            ))
+          child: loginContent,
+        ))
       ];
     }
 
@@ -392,8 +399,7 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
                   margin: const EdgeInsets.only(top: 48, bottom: 32),
                   child: Text("New Login",
                       style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w300))),
+                          fontSize: 30, fontWeight: FontWeight.w300))),
               ...renderContent()
             ]),
       ),

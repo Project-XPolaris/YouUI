@@ -13,15 +13,17 @@ class UserAuthResponse {
   UserAuthResponse.fromJson(dynamic json) {
     success = json["success"];
     token = json["token"];
-    uid = json["uid"];
+    uid = json["id"];
   }
 }
 class OauthData {
   String? accessToken;
   String? username;
+  String? uid;
   OauthData.fromJson(dynamic json) {
     accessToken = json["accessToken"];
     username = json["username"];
+    uid = json["id"];
   }
 }
 class OauthTokenResponse extends BaseResponse<OauthData> {

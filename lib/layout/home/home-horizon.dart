@@ -10,22 +10,17 @@ class HomeTabLayoutHorizon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Row(
-          children: [
-            Column(
-              children: [
-                Expanded(
-                    child: Container(child: verticalNavigation)
-                )
-              ],
-            ),
-            Expanded(
-                child: Container(
-                  child: body,
-                ))
-          ],
-        ),
+      body: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 16),
+              child: verticalNavigation
+          ),
+          Expanded(
+              child: Container(
+                child: body,
+              ))
+        ],
       ),
     );
   }

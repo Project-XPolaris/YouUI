@@ -45,17 +45,15 @@ class CoverTitleGridItem extends StatelessWidget {
         Expanded(
           child:GestureDetector(
             onTap: onTap,
-            child: Container(
-              child: Cover(
-                loadingColor: loadingCoverColor,
-                placeHolderColor: placeholderColor,
-                placeHolderIcon: placeHolderIcon,
-                imageFit: imageBoxFit,
-                coverUrl: imageUrl,
-                borderRadius: borderRadius,
-                failedColor: failedColor,
-                failedIcon: failedIcon,
-              ),
+            child: Cover(
+              loadingColor: loadingCoverColor,
+              placeHolderColor: placeholderColor,
+              placeHolderIcon: placeHolderIcon,
+              imageFit: imageBoxFit,
+              coverUrl: imageUrl,
+              borderRadius: borderRadius,
+              failedColor: failedColor,
+              failedIcon: failedIcon,
             ),
           ),
         ),

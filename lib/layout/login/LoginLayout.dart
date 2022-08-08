@@ -109,10 +109,10 @@ class _LoginLayoutState extends State<LoginLayout> {
                               child: ListTile(
                                 onTap: () => _onHistoryClick(history),
                                 leading: CircleAvatar(
-                                  backgroundColor: Theme.of(context).colorScheme.surfaceTint,
+                                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                                   child: Icon(
                                     Icons.person,
-                                    color: Colors.white,
+                                    color:Theme.of(context).colorScheme.onPrimaryContainer,
                                   ),
                                 ),
                                 title: Text(

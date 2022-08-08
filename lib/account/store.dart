@@ -85,12 +85,16 @@ class AccountManager {
     return info;
   }
 
-  Future<OauthTokenResponse?> _getUserAuth(String path,String username, password) async {
+  Future<OauthTokenResponse?> _getUserAuth(
+      String path, String username, password) async {
     var authResponse = await client.post("$serviceUrl$path", data: {
       "username": username,
       "password": password,
-    },queryParameters: { "type":"accessToken" });
-    OauthTokenResponse userAuth = OauthTokenResponse.fromJson(authResponse.data);
+    }, queryParameters: {
+      "type": "accessToken"
+    });
+    OauthTokenResponse userAuth =
+        OauthTokenResponse.fromJson(authResponse.data);
     bool? success = userAuth.success;
     if (success == null || !success) {
       return null;
@@ -111,7 +115,7 @@ class AccountManager {
   }
 
   Future<LoginHistory?> login(
-      String serviceUrl,String path, String username, String password) async {
+      String serviceUrl, String path, String username, String password) async {
     this.serviceUrl = serviceUrl;
     final Info? info = await _getService();
     if (info == null || !info.success) {
@@ -124,19 +128,20 @@ class AccountManager {
     LoginHistory loginHistory =
         LoginHistory(apiUrl: serviceUrl, username: "Public");
 
-    OauthTokenResponse? userAuth = await _getUserAuth(path,username, password);
+    OauthTokenResponse? userAuth = await _getUserAuth(path, username, password);
     if (userAuth == null) {
       return null;
     }
     loginHistory.token = userAuth.data!.accessToken;
     loginHistory.username = userAuth.data!.username;
-
+    loginHistory.id = userAuth.data!.uid;
     loginHistoryManager.add(loginHistory);
     return loginHistory;
   }
 
-  LoginHistory anonymousLogin(){
-    LoginHistory history = LoginHistory(username: "anonymous", apiUrl: serviceUrl);
+  LoginHistory anonymousLogin() {
+    LoginHistory history =
+        LoginHistory(username: "anonymous", apiUrl: serviceUrl);
     loginHistoryManager.add(history);
     return history;
   }
@@ -179,7 +184,7 @@ class AccountManager {
     }
     loginHistory.token = userAuth.accessToken;
     loginHistory.username = userAuth.username;
-
+    loginHistory.id = userAuth.uid;
     loginHistoryManager.add(loginHistory);
     return loginHistory;
   }
@@ -195,6 +200,7 @@ class LoginHistory {
   String? apiUrl;
   String? username;
   String? token;
+  String? id;
 
   LoginHistory({this.apiUrl, this.username, this.token});
 
@@ -202,10 +208,11 @@ class LoginHistory {
     apiUrl = json['apiUrl'];
     username = json['username'];
     token = json['token'];
+    id = json['id'];
   }
 
   Map<String, dynamic> toJson() =>
-      {'apiUrl': apiUrl, 'username': username, "token": token};
+      {'apiUrl': apiUrl, 'username': username, "token": token,"id":id};
 }
 
 class LoginHistoryManager {
