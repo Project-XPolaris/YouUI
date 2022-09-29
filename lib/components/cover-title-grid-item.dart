@@ -19,22 +19,28 @@ class CoverTitleGridItem extends StatelessWidget {
   final double? coverHeight;
   final Color? failedColor;
   final IconData? failedIcon;
+  final Alignment? imageAlignment;
 
-  const CoverTitleGridItem({Key? key,
-    this.metaHeight = 36,
-    required this.title,
-    this.subtitle,
-    this.imageUrl,
-    this.metaContainerMagin = const EdgeInsets.only(top: 8),
-    this.coverWidth,
-    this.loadingCoverColor,
-    this.placeholderColor,
-    this.placeHolderIcon,
-    this.titleTextStyle,
-    this.onTap,
-    this.failedColor,
-    this.failedIcon,
-    this.subtitleTextStyle, this.imageBoxFit, this.borderRadius = 0, this.coverHeight})
+  const CoverTitleGridItem(
+      {Key? key,
+      this.metaHeight = 36,
+      required this.title,
+      this.subtitle,
+      this.imageUrl,
+      this.metaContainerMagin = const EdgeInsets.only(top: 8),
+      this.coverWidth,
+      this.loadingCoverColor,
+      this.placeholderColor,
+      this.placeHolderIcon,
+      this.titleTextStyle,
+      this.onTap,
+      this.failedColor,
+      this.failedIcon,
+      this.imageAlignment,
+      this.subtitleTextStyle,
+      this.imageBoxFit,
+      this.borderRadius = 0,
+      this.coverHeight})
       : super(key: key);
 
   @override
@@ -43,17 +49,20 @@ class CoverTitleGridItem extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child:GestureDetector(
+          child: GestureDetector(
             onTap: onTap,
-            child: Cover(
-              loadingColor: loadingCoverColor,
-              placeHolderColor: placeholderColor,
-              placeHolderIcon: placeHolderIcon,
-              imageFit: imageBoxFit,
-              coverUrl: imageUrl,
-              borderRadius: borderRadius,
-              failedColor: failedColor,
-              failedIcon: failedIcon,
+            child: Container(
+              alignment: imageAlignment,
+              child: Cover(
+                loadingColor: loadingCoverColor,
+                placeHolderColor: placeholderColor,
+                placeHolderIcon: placeHolderIcon,
+                imageFit: imageBoxFit,
+                coverUrl: imageUrl,
+                borderRadius: borderRadius,
+                failedColor: failedColor,
+                failedIcon: failedIcon,
+              ),
             ),
           ),
         ),
@@ -72,10 +81,10 @@ class CoverTitleGridItem extends StatelessWidget {
               ),
               subtitle != null
                   ? Text(
-                subtitle,
-                maxLines: 1,
-                style: subtitleTextStyle,
-              )
+                      subtitle,
+                      maxLines: 1,
+                      style: subtitleTextStyle,
+                    )
                   : Container()
             ],
           ),

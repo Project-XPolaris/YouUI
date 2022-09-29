@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youui/components/cover-title-list-item.dart';
+import 'package:youui_example/utils.dart';
 
 class CoverTitleListItemExample extends StatelessWidget {
   const CoverTitleListItemExample({Key? key}) : super(key: key);
@@ -11,26 +12,25 @@ class CoverTitleListItemExample extends StatelessWidget {
         title: Text("CoverTitleExample"),
       ),
       body: Container(
-        color: Colors.black,
         child: ListView(
           children: [
             ...List.generate(100, (index) {
+              var image = getRandomWidthHeightImage();
+              var imageWidth = image[0];
+              var imageHeight = image[1];
+              var width = 120.0;
+              var height = width * imageHeight / imageWidth;
               return Container(
                 margin: EdgeInsets.only(bottom: 8),
                 child: CoverTitleListItem(
                   title: "item ${index}",
                   subtitle: "subtitle ${index}",
                   metaContainerMagin: EdgeInsets.only(left: 16),
-                  imageUrl:
-                      "https://images.freeimages.com/images/large-previews/76e/abstract-1-1174741.jpg",
-                  titleTextStyle: TextStyle(color: Colors.white),
-                  subtitleTextStyle: TextStyle(color: Colors.white),
-                  loadingCoverColor: Colors.green,
-                  placeholderColor: Colors.red,
-                  coverHeight: 120,
-                  coverWidth: 120 * 4 / 3,
-                  borderRadius: 6,
-                  imageBoxFit: BoxFit.contain,
+                  imageUrl: image[2],
+                  coverHeight: height,
+                  coverWidth: width,
+                  borderRadius: 8,
+                  imageBoxFit: BoxFit.cover,
                 ),
               );
             })

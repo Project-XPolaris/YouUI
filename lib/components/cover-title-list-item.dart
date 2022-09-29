@@ -42,11 +42,12 @@ class CoverTitleListItem extends StatelessWidget {
     String? subtitle = this.subtitle;
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        height: 120,
-        child: Row(
-          children: [
-            Cover(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            child: Cover(
               loadingColor: loadingCoverColor,
               placeHolderColor: placeholderColor,
               placeHolderIcon: placeHolderIcon,
@@ -56,29 +57,29 @@ class CoverTitleListItem extends StatelessWidget {
               coverUrl: imageUrl,
               borderRadius: borderRadius,
             ),
-            Expanded(
-              child: Container(
-                margin: metaContainerMagin,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: titleTextStyle,
-                    ),
-                    subtitle != null
-                        ? Text(
-                            subtitle,
-                            style: subtitleTextStyle,
-                          )
-                        : Container()
-                  ],
-                ),
+          ),
+          Expanded(
+            child: Container(
+              margin: metaContainerMagin,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: titleTextStyle,
+                  ),
+                  subtitle != null
+                      ? Text(
+                          subtitle,
+                          style: subtitleTextStyle,
+                        )
+                      : Container()
+                ],
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }

@@ -44,29 +44,27 @@ class Cover extends StatelessWidget {
     }
     if (url != null) {
       return GestureDetector(
-        child: Center(
-          child: ClipRRect(
-            child: Image.network(
-              url,
-              fit: imageFit,
-              width: width,
-              height: height,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: failedColor,
-                    borderRadius: BorderRadius.circular(borderRadius),
-                  ),
-                  width: width,
-                  height: height,
-                  child: Center(
-                    child: Icon(failedIcon),
-                  ),
-                );
-              },
-            ),
-            borderRadius: BorderRadius.circular(borderRadius),
+        child: ClipRRect(
+          child: Image.network(
+            url,
+            fit: imageFit,
+            width: width,
+            height: height,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: failedColor,
+                  borderRadius: BorderRadius.circular(borderRadius),
+                ),
+                width: width,
+                height: height,
+                child: Center(
+                  child: Icon(failedIcon),
+                ),
+              );
+            },
           ),
+          borderRadius: BorderRadius.circular(borderRadius),
         ),
         onTap: onTap,
       );
