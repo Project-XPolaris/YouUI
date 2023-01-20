@@ -5,11 +5,13 @@ class ResponsiveGridView extends StatelessWidget {
   final ScrollController? controller;
   final int itemWidth;
   final double aspectRatio;
+  final ScrollPhysics? physics;
 
   const ResponsiveGridView({Key? key,
     this.aspectRatio = 1,
     required this.children,
     required this.itemWidth,
+    this.physics,
     this.controller})
       : super(key: key);
 
@@ -20,6 +22,7 @@ class ResponsiveGridView extends StatelessWidget {
           var crossAxisCount = constraints.maxWidth ~/ itemWidth;
           return GridView.count(
             controller: controller,
+            physics: physics,
             primary: false,
             childAspectRatio: aspectRatio,
             padding: const EdgeInsets.all(20),

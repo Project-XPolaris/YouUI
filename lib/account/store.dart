@@ -87,6 +87,9 @@ class AccountManager {
 
   Future<OauthTokenResponse?> _getUserAuth(
       String path, String username, password) async {
+    print("$serviceUrl$path");
+    print(username);
+    print(password);
     var authResponse = await client.post("$serviceUrl$path", data: {
       "username": username,
       "password": password,

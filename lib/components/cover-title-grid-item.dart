@@ -20,27 +20,32 @@ class CoverTitleGridItem extends StatelessWidget {
   final Color? failedColor;
   final IconData? failedIcon;
   final Alignment? imageAlignment;
+  final int titleMaxLine;
+  final int subtitleMaxLine;
+  final Function()? onTitleTap;
 
-  const CoverTitleGridItem(
-      {Key? key,
-      this.metaHeight = 36,
-      required this.title,
-      this.subtitle,
-      this.imageUrl,
-      this.metaContainerMagin = const EdgeInsets.only(top: 8),
-      this.coverWidth,
-      this.loadingCoverColor,
-      this.placeholderColor,
-      this.placeHolderIcon,
-      this.titleTextStyle,
-      this.onTap,
-      this.failedColor,
-      this.failedIcon,
-      this.imageAlignment,
-      this.subtitleTextStyle,
-      this.imageBoxFit,
-      this.borderRadius = 0,
-      this.coverHeight})
+  const CoverTitleGridItem({Key? key,
+    this.metaHeight = 36,
+    required this.title,
+    this.subtitle,
+    this.imageUrl,
+    this.metaContainerMagin = const EdgeInsets.only(top: 8),
+    this.coverWidth,
+    this.loadingCoverColor,
+    this.placeholderColor,
+    this.placeHolderIcon,
+    this.titleTextStyle,
+    this.onTap,
+    this.failedColor,
+    this.failedIcon,
+    this.imageAlignment,
+    this.subtitleTextStyle,
+    this.imageBoxFit,
+    this.borderRadius = 0,
+    this.subtitleMaxLine = 1,
+    this.titleMaxLine = 1,
+    this.onTitleTap,
+    this.coverHeight})
       : super(key: key);
 
   @override
@@ -70,23 +75,37 @@ class CoverTitleGridItem extends StatelessWidget {
           margin: metaContainerMagin,
           height: metaHeight,
           width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                maxLines: 1,
-                style: titleTextStyle,
-              ),
-              subtitle != null
-                  ? Text(
-                      subtitle,
-                      maxLines: 1,
-                      style: subtitleTextStyle,
-                    )
-                  : Container()
-            ],
+          child: GestureDetector(
+            onTap: () {
+              if (onTitleTap != null) {
+                this.onTitleTap!();
+                return;
+              }
+              if (onTap != null){
+                this.onTap!();
+                return;
+              }
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: titleMaxLine,
+                  style: titleTextStyle,
+                  textAlign: TextAlign.center,
+                ),
+                subtitle != null
+                    ? Text(
+                  subtitle,
+                  maxLines: titleMaxLine,
+                  style: subtitleTextStyle,
+                  textAlign: TextAlign.center,
+                )
+                    : Container()
+              ],
+            ),
           ),
         )
       ],

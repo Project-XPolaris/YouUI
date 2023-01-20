@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
         colorSchemeSeed:Colors.greenAccent ,
       ),
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),

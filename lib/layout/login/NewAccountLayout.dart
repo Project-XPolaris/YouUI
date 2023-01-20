@@ -1,10 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:youui/account/info.dart';
 import 'package:youui/account/store.dart';
 import 'package:youui/layout/login/BaseLoginView.dart';
 import 'package:youui/layout/login/WebOauthLoginView.dart';
+import 'package:collection/collection.dart';
 
 import '../../components/oauth-web-login.dart';
+import '../../util.dart';
 
 class NewLoginLayout extends StatefulWidget {
   final Function(LoginHistory history) onLogin;
@@ -18,6 +21,7 @@ class NewLoginLayout extends StatefulWidget {
 class _NewLoginLayoutState extends State<NewLoginLayout> {
   String inputUrl = "";
   Info? serviceInfo;
+  String? currentSelectedLoginName;
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +65,24 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
       }
 
       AccountManager().serviceUrl = serviceUrl;
-      var info = await AccountManager().getInfo();
+      Info? info;
+      try {
+        info = await AccountManager().getInfo();
+      } on DioError catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Connect failed: ${e.message}")));
+        return;
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("connect service failed")));
+        return;
+      }
       if (info != null) {
         setState(() {
           serviceInfo = info;
+          if (serviceInfo!.auths.isNotEmpty) {
+            currentSelectedLoginName = serviceInfo!.auths.first.name;
+          }
         });
       }
     }
@@ -121,33 +139,7 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
           if (code != null) {
             _onOauthLoginResult(code);
           }
-          // final result = await FlutterWebAuth.authenticate(
-          //     url: oauthTarget.toString(),
-          //     callbackUrlScheme: widget.oauthCallbackScheme);
-          // final code = Uri.parse(result).queryParameters['code'];
-          // if (code != null) {
-          //   _onOauthLoginResult(code);
-          // }
         },
-      );
-    }
-
-    Widget renderAnomymousLogin() {
-      return Container(
-        child: Column(
-          children: [
-            ElevatedButton(
-              child: Text("Anonymous Login"),
-              onPressed: () async {
-                // LoginHistory? history = await AccountManager().login(
-                //     AccountManager().serviceUrl, info.url!, null, null);
-                // if (history != null) {
-                //   widget.onLogin(history);
-                // }
-              },
-            )
-          ],
-        ),
       );
     }
 
@@ -222,69 +214,64 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
       ];
     }
 
+    Widget renderLoginContent(AuthInfo info) {
+      switch (info.type) {
+        case "weboauth":
+          return renderWebOauthLogin(info);
+        case "base":
+          return renderUsernamePasswordLogin(info);
+        case "anonymous":
+          return Column(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  widget.onLogin(AccountManager().anonymousLogin());
+                },
+                child: Text("Anonymous Login"),
+              ),
+            ],
+          );
+        default:
+          return Container();
+      }
+    }
+
     List<Widget> renderLogin() {
       final auths = serviceInfo?.auths ?? [];
+      Widget fixedHeader = Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+              color: Theme.of(context).colorScheme.surfaceVariant),
+          padding: const EdgeInsets.all(8),
+          child: ListTile(
+            leading: const Icon(
+              Icons.cloud,
+            ),
+            title: Text(AccountManager().serviceUrl, style: TextStyle()),
+            trailing: GestureDetector(
+              child: const Icon(
+                Icons.close,
+              ),
+              onTap: () {
+                setState(() {
+                  serviceInfo = null;
+                });
+              },
+            ),
+          ));
       Widget loginContent = Container();
-      if (auths.length > 1) {
+      if (auths.length > 1 && !isPhone(context)) {
         List<Widget> tabs = [];
         for (var element in auths) {
-          switch (element.type) {
-            case "weboauth":
-              tabs.add(Container(
-                padding: EdgeInsets.only(left: 8, right: 8),
-                child: renderWebOauthLogin(element),
-              ));
-              break;
-            case "base":
-              tabs.add(Container(
-                padding: EdgeInsets.only(left: 8, right: 8),
-                child: renderUsernamePasswordLogin(element),
-              ));
-              break;
-            case 'anonymous':
-              tabs.add(Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      widget.onLogin(AccountManager().anonymousLogin());
-                    },
-                    child: Text("Anonymous Login"),
-                  ),
-                ],
-              ));
-              break;
-            default:
-              break;
-          }
+          tabs.add(renderLoginContent(element));
         }
         loginContent = DefaultTabController(
           length: tabs.length,
           child: Container(
             child: Column(
               children: [
-                Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                        color: Theme.of(context).colorScheme.surfaceVariant),
-                    padding: const EdgeInsets.all(8),
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.cloud,
-                      ),
-                      title:
-                          Text(AccountManager().serviceUrl, style: TextStyle()),
-                      trailing: GestureDetector(
-                        child: Icon(
-                          Icons.close,
-                        ),
-                        onTap: () {
-                          setState(() {
-                            serviceInfo = null;
-                          });
-                        },
-                      ),
-                    )),
+                fixedHeader,
                 TabBar(
                   tabs: [
                     for (var value in auths)
@@ -310,66 +297,70 @@ class _NewLoginLayoutState extends State<NewLoginLayout> {
           ),
         );
       }
-      if (auths.length == 1) {
-        Widget content = Container();
-        switch (auths[0].type) {
-          case "weboauth":
-            content = renderWebOauthLogin(auths[0]);
-            break;
-          case "base":
-            content = renderUsernamePasswordLogin(auths[0]);
-            break;
-          case "anonymous":
-            content = Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    widget.onLogin(AccountManager().anonymousLogin());
-                  },
-                  child: Text("Anonymous Login"),
-                ),
-              ],
-            );
-            break;
-          default:
-            break;
+      if (auths.length > 1 && isPhone(context)) {
+        Widget? currentContent;
+        AuthInfo? currentAuth = auths.firstWhereOrNull(
+            (element) => element.name == currentSelectedLoginName);
+        if (currentAuth != null) {
+          currentContent = renderLoginContent(currentAuth);
+        } else {
+          currentContent = Container();
         }
-        loginContent = Container(
-          child: Column(
-            children: [
-              Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                      color: Theme.of(context).colorScheme.surfaceVariant),
-                  padding: const EdgeInsets.all(8),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.cloud,
+        loginContent = Column(
+          children: [
+            fixedHeader,
+            Container(
+              margin: const EdgeInsets.only(bottom: 32),
+              child: Row(
+                children: [
+                  Container(
+                    child: const Text("Use auth type:"),
+                    margin: const EdgeInsets.only(right: 8),
+                  ),
+                  DropdownButton<String>(
+                    value: currentSelectedLoginName,
+                    onChanged: (String? value) {
+                      // This is called when the user selects an item.
+                      setState(() {
+                        currentSelectedLoginName = value!;
+                      });
+                    },
+                    elevation: 0,
+                    icon: const Visibility(
+                        visible: false, child: Icon(Icons.arrow_downward)),
+                    focusColor: Colors.transparent,
+                    focusNode: FocusNode(canRequestFocus: false),
+                    underline: Container(
+                      height: 2,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    title:
-                        Text(AccountManager().serviceUrl, style: TextStyle()),
-                    trailing: GestureDetector(
-                      child: Icon(
-                        Icons.close,
-                      ),
-                      onTap: () {
-                        setState(() {
-                          serviceInfo = null;
-                        });
-                      },
-                    ),
-                  )),
-              Expanded(
-                  child: Container(
-                padding: EdgeInsets.only(left: 16, right: 16),
+                    items: auths.map<DropdownMenuItem<String>>((AuthInfo info) {
+                      return DropdownMenuItem<String>(
+                        value: info.name,
+                        child: Text(info.name),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(child: currentContent)
+          ],
+        );
+      }
+      if (auths.length == 1) {
+        loginContent = Column(
+          children: [
+            fixedHeader,
+            Expanded(
                 child: Container(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: content,
-                ),
-              ))
-            ],
-          ),
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Container(
+                padding: const EdgeInsets.only(top: 16),
+                child: renderLoginContent(auths[0]),
+              ),
+            ))
+          ],
         );
       }
 

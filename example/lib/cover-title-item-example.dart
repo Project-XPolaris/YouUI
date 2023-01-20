@@ -16,15 +16,16 @@ class CoverTitleItemExample extends StatelessWidget {
       ),
       body: ResponsiveGridView(
         itemWidth: 200,
-        aspectRatio: 4 /3,
+        aspectRatio: 0.5,
         children: [
           ...List.generate(100, (index) {
             return CoverTitleGridItem(
-              title: "item ${index}",
-              imageUrl:  getRandomHeight(),
+              title: "item ${index} longggg longggg longggg longgg longggg longggg longggg longgg",
+              imageUrl:  "https://picsum.photos/id/1/200/300",
               borderRadius: 6,
               imageBoxFit: BoxFit.contain,
               imageAlignment: Alignment.bottomCenter,
+              metaHeight: 64,
             );
           })
         ],

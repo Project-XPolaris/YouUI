@@ -53,13 +53,13 @@ class _BaseLoginViewState extends State<BaseLoginView> {
           ),
           Container(
             width: double.infinity,
-            margin: EdgeInsets.only(bottom: 16),
+            margin: const EdgeInsets.only(bottom: 16),
             child: ElevatedButton(
-              child: Text(
+              child: const Text(
                 'Login',
               ),
               onPressed: () {
-                this.widget.onLoginClick(inputUsername, inputPassword);
+                widget.onLoginClick(inputUsername, inputPassword);
               },
             ),
           ),
