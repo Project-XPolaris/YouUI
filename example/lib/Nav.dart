@@ -10,6 +10,7 @@ class NavExpanlePage extends StatefulWidget {
 
 class _NavExpanlePageState extends State<NavExpanlePage> {
   int selectIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,8 +51,11 @@ class _NavExpanlePageState extends State<NavExpanlePage> {
               unselectedItemColor: Theme.of(context).colorScheme.secondary,
             ),
             tabIndex: selectIndex,
+            action: IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.settings),
+            ),
           )
-
         ],
       ),
     );
@@ -67,10 +71,10 @@ class _NavExpanlePageState extends State<NavExpanlePage> {
           });
         },
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home),label: "item1"),
-          BottomNavigationBarItem(icon: Icon(Icons.home),label: "item2"),
-          BottomNavigationBarItem(icon: Icon(Icons.home),label: "item3"),
-          BottomNavigationBarItem(icon: Icon(Icons.home),label: "item4"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "item1"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "item2"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "item3"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "item4"),
         ],
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Theme.of(context).colorScheme.secondary,

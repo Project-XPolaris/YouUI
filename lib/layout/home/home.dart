@@ -15,7 +15,6 @@ class ResponsiveTabPageLayout extends StatelessWidget {
   final Widget? body;
   final AppBar? appbar;
   final Widget? action;
-  final double? verticalNavHeight;
   const ResponsiveTabPageLayout({
     this.navigationStyle,
     this.navItems = const [],
@@ -24,7 +23,6 @@ class ResponsiveTabPageLayout extends StatelessWidget {
     this.body,
     this.appbar,
     this.action,
-    this.verticalNavHeight,
     required this.onTabIndexChange,
   }) : super(key: key);
 
@@ -51,7 +49,6 @@ class ResponsiveTabPageLayout extends StatelessWidget {
             tabIndex: tabIndex,
             navigationStyle: navigationStyle,
             navItems: navItems,
-            navHeight: verticalNavHeight,
           ),
         ),
       ),

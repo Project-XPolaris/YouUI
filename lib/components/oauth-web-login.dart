@@ -14,7 +14,9 @@ class WebOauthWindow extends StatelessWidget {
         ),
         body: Container(
           child: InAppWebView(
-            initialUrlRequest: URLRequest(url: Uri.parse(oauthUrl)),
+            initialUrlRequest: URLRequest(
+              url: WebUri(oauthUrl),
+            ),
             onLoadStop: (controller, url) {
               final code = url?.queryParameters["code"];
               if (code != null) {
