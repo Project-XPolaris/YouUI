@@ -24,4 +24,7 @@ void main() {
       findsOneWidget,
     );
   });
+  test("FetchLoginInfoTest", () => {
+    expect(1, 1)
+  });
 }

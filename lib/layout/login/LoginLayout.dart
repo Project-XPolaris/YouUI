@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:youplusauthplugin/youplusauthplugin.dart';
 import 'package:youui/account/info.dart';
 import 'package:youui/account/store.dart';
 import 'package:youui/layout/login/NewAccountLayout.dart';
@@ -20,7 +19,6 @@ class LoginLayout extends StatefulWidget {
 }
 
 class _LoginLayoutState extends State<LoginLayout> {
-  Youplusauthplugin plugin = Youplusauthplugin();
   String inputUrl = "";
   String inputUsername = "";
   String inputPassword = "";

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:youplusauthplugin/youplusauthplugin.dart';
 import 'package:youui/account/auth.dart';
 import 'package:youui/account/entry.dart';
 import 'package:youui/account/token.dart';
@@ -16,7 +15,6 @@ class UserLoginResult {
 
 class AccountManager {
   static final AccountManager _singleton = AccountManager._internal();
-  Youplusauthplugin plugin = Youplusauthplugin();
   String serviceUrl = "";
   String serviceName = "";
   String userAuthPath = "/user/auth";
@@ -41,15 +39,12 @@ class AccountManager {
   init({Function(LoginHistory)? authCallback}) async {
     await loginHistoryManager.refreshHistory();
     if (authCallback != null) {
-      plugin.registerAuthCallback((username, token) {
-        _onAuthComplete(username, token);
-      });
+
     }
   }
 
   openYouPlus(String url) {
     serviceUrl = serviceUrl;
-    plugin.openYouPlus();
   }
 
   Future<Info?> getInfo() async {
