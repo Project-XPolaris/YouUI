@@ -15,7 +15,7 @@ class WebOauthLoginView extends StatelessWidget {
             onPressed: () {
               onLogin();
             },
-            style: ElevatedButton.styleFrom(primary: primaryColor),
+            style: ElevatedButton.styleFrom(),
           )
         ],
       ),

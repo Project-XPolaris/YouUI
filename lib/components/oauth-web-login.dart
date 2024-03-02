@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class WebOauthWindow extends StatelessWidget {
   final String oauthUrl;
@@ -13,17 +12,6 @@ class WebOauthWindow extends StatelessWidget {
           title: Text('Login'),
         ),
         body: Container(
-          child: InAppWebView(
-            initialUrlRequest: URLRequest(
-              url: WebUri(oauthUrl),
-            ),
-            onLoadStop: (controller, url) {
-              final code = url?.queryParameters["code"];
-              if (code != null) {
-                Navigator.of(context).pop(code);
-              }
-            },
-          ),
-        ));
+          child:Container()));
   }
 }
