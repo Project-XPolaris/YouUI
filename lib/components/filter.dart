@@ -45,6 +45,7 @@ class SigleSelectFilterView extends StatelessWidget {
           padding: textBoxPadding,
           child: Text(
             title,
+
           ),
         ),
         Container(
@@ -55,7 +56,7 @@ class SigleSelectFilterView extends StatelessWidget {
             children: [
               ...options.map((option) {
                 return FilterChip(
-                    label: Text(option.key),
+                    label: Text(option.label),
                     onSelected: (selected) {
                       onSelectChange(option);
                     },
@@ -84,6 +85,7 @@ class CheckChipFilterView extends StatelessWidget {
   final EdgeInsets chipContainerPadding;
   final EdgeInsets chipContentPadding;
   final List<Widget> extraChildren;
+  final Widget? actions;
   const CheckChipFilterView(
       {Key? key,
       required this.options,
@@ -96,8 +98,8 @@ class CheckChipFilterView extends StatelessWidget {
       this.textBoxPadding = const EdgeInsets.all(16),
       this.chipContainerPadding = const EdgeInsets.all(8),
       this.chipContentPadding = const EdgeInsets.all(8),
-      this.extraChildren = const []
-      })
+      this.extraChildren = const [],
+      this.actions})
       : super(key: key);
 
   @override
@@ -107,10 +109,18 @@ class CheckChipFilterView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
-          width: double.infinity,
-          padding: textBoxPadding,
-          child: Text(
-            title,
+          child: Row(
+            children: [
+              Expanded(child: Container(
+                width: double.infinity,
+                padding: textBoxPadding,
+                child: Text(
+                  title,
+                ),
+              ))
+              ,
+              actions ?? Container()
+            ],
           ),
         ),
         Container(
