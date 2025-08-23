@@ -58,93 +58,89 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         brightness: Brightness.light,
         useMaterial3: true,
-        colorSchemeSeed:Colors.greenAccent ,
+        colorSchemeSeed: Colors.greenAccent,
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         useMaterial3: true,
-        colorSchemeSeed:Colors.greenAccent ,
+        colorSchemeSeed: Colors.greenAccent,
       ),
       themeMode: ThemeMode.dark,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Builder(
-          builder: (context) {
-            return Center(
-                child: ListView(
-              children: [
-                ListTile(
-                  title: const Text("CoverTitleGridItem"),
-                  onTap: () {
-                    Navigator.push(
+        body: Builder(builder: (context) {
+          return Center(
+              child: ListView(
+            children: [
+              ListTile(
+                title: const Text("CoverTitleGridItem"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CoverTitleItemExample()),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text("CoverTitleListItem"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CoverTitleListItemExample()),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text("HorizonList"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HorizonListExample()),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text("NewLogin"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            NewLoginLayout(onLogin: (history) {})),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text("Auth"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LoginLayout(
+                              title: 'My app',
+                              onLoginSuccess: (history) {},
+                              subtitle: 'from someone',
+                            )),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text("Horizon Naviagtion"),
+                onTap: () {
+                  Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => CoverTitleItemExample()),
-                    );
-                  },
-                ),
-                ListTile(
-                  title: const Text("CoverTitleListItem"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CoverTitleListItemExample()),
-                    );
-                  },
-                ),
-                ListTile(
-                  title: const Text("HorizonList"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HorizonListExample()),
-                    );
-                  },
-                ),
-                ListTile(
-                  title: const Text("NewLogin"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewLoginLayout(onLogin: (history){})),
-                    );
-                  },
-                ),
-                ListTile(
-                  title: const Text("Auth"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => LoginLayout(
-                            title: 'My app',
-                            onLoginSuccess: (LoginHistory ) {
-
-                            },
-                            subtitle: 'from someone',
-                          )),
-                    );
-                  },
-                ),
-                ListTile(
-                  title: const Text("Horizon Naviagtion"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NavExpanlePage())
-                    );
-                  },
-                ),
-              ],
-            ));
-          }
-        ),
+                          builder: (context) => NavExpanlePage()));
+                },
+              ),
+            ],
+          ));
+        }),
       ),
     );
   }
